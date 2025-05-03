@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Firebase Web Interface</title>
+  <style>
+    body { font-family: Arial; text-align: center; margin-top: 50px; }
+    #value-card {
+      font-size: 2em;
+      padding: 30px;
+      background-color: #f9f9f9;
+      border-radius: 15px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+    <h1>Welcome to Web interface</h1>
+    <h1>I like licking femboy armpits !!</h1>
+  <h2>Live Sensor Value</h2>
+  <div id="value-card">Loading...</div>
+
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+  
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+      apiKey: "AIzaSyA0kCu0WUKmZO_cCE25b4pPqjOiWX_ivrA",
+      authDomain: "fir-dataflow-a29b9.firebaseapp.com",
+      projectId: "fir-dataflow-a29b9",
+      storageBucket: "fir-dataflow-a29b9.firebasestorage.app",
+      messagingSenderId: "1074767296954",
+      appId: "1:1074767296954:web:f02741c7bab1189d358583",
+      measurementId: "G-4ZDHMTBP2D"
+    };
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+  </script>
+  
+  <script>
+    async function fetchSensorValue() {
+      try {
+        const response = await fetch("/api/firebase/");
+        const data = await response.json();
+        if (data.value !== undefined) {
+          document.getElementById("value-card").textContent = data.value;
+        } else {
+          document.getElementById("value-card").textContent = "Error fetching value";
+        }
+      } catch (error) {
+        document.getElementById("value-card").textContent = "Fetch error";
+        console.error(error);
+      }
+    }
+
+    // Initial fetch
+    fetchSensorValue();
+
+    // Refresh every 1 seconds
+    setInterval(fetchSensorValue, 1000);
+
+  </script>
+</body>
+</html>
