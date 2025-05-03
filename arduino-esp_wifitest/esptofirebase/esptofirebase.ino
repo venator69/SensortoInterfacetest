@@ -5,15 +5,15 @@
 #define WIFI_SSID "clement gay"
 #define WIFI_PASSWORD "clement69"
 
-// Replace with your Firebase project credentials
-#define FIREBASE_HOST "your-project-id.firebaseio.com"  // No "https://"
-#define FIREBASE_AUTH "YOUR_FIREBASE_DATABASE_SECRET_OR_WEB_API_KEY"
+// Replace with your Firebase Realtime Database credentials
+#define FIREBASE_HOST "https://fir-dataflow-a29b9-default-rtdb.firebaseio.com/"
+#define FIREBASE_AUTH "of4Nc0Ijz8OjKW6UMzP0eO7Wx0khNw9CoT0UqnPL"  // Or Web API Key if using token-based auth
 
 FirebaseData fbdo;
 
 void setup() {
-  Serial.begin(115200);  // Serial Monitor
-  Serial2.begin(9600, SERIAL_8N1, 16, 17); // RX=16, TX=17 for external UART
+  Serial.begin(115200);
+  Serial2.begin(9600, SERIAL_8N1, 16, 17); // RX=16, TX=17
 
   // Connect to Wi-Fi
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
@@ -31,17 +31,16 @@ void setup() {
 }
 
 void loop() {
-  // Read from Serial2 (e.g., data sent from Arduino)
   if (Serial2.available()) {
     String data = Serial2.readStringUntil('\n');
-    data.trim();  // Remove newline or spaces
+    data.trim();  // Remove any extra spaces or newlines
     Serial.println("Received: " + data);
 
-    // Convert and send to Firebase
-    if (Firebase(fbdo, "/sensor/value", data)) {
-      Serial.println("Data sent to Firebase: " + String(data));
+    // Upload to Firebase
+    if (Firebase.setString(fbdo, "/sensor/value", data)) {
+      Serial.println("Data sent to Firebase: " + data);
     } else {
-      Serial.println("Failed to send data: " + fbdo.errorReason());
+      Serial.println("Firebase error: " + fbdo.errorReason());
     }
   }
 }
